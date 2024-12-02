@@ -35,9 +35,9 @@ const Orca: React.FC<OrcaProps> = ({ position }) => {
         <circle cx="75" cy="25" r="3" fill="#000000" />
         <circle cx="75" cy="24.5" r="1" fill="#ffffff" />
         <circle cx="74.5" cy="24" r="0.5" fill="#ffffff" opacity="0.8" />
-        {/* Dorsal fin with curve */}
+        {/* Larger dorsal fin with more realistic curve */}
         <path
-          d="M45 10c0 0 5-4 8-7s4-3 4-1-2 6-4 7-8 1-8 1z"
+          d="M45 10c0 0 8-8 12-12s6-4 6-1s-3 8-6 10-12 3-12 3z"
           fill="#1a1a1a"
         />
         {/* Tail fin with better shape */}
