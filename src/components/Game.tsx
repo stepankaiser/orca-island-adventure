@@ -81,6 +81,24 @@ const Game: React.FC = () => {
         background: "linear-gradient(to bottom, #D3E4FD, #0EA5E9)",
       }}
     >
+      {/* Snowfall effect */}
+      <div className="absolute inset-0 animate-snow opacity-50">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-white"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `fall ${2 + Math.random() * 3}s linear infinite`,
+            }}
+          >
+            ❄️
+          </div>
+        ))}
+      </div>
+
+      {/* Wave effect */}
       <div className="absolute inset-0 animate-wave opacity-30">
         <svg width="100%" height="100%">
           <pattern
@@ -107,7 +125,7 @@ const Game: React.FC = () => {
       ))}
 
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-40 bg-island-light border-2 border-island-dark rounded-l-full flex items-center justify-center">
-        <span className="text-4xl">🏁</span>
+        <span className="text-4xl">🎄</span>
       </div>
 
       <Orca position={position} />

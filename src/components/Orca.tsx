@@ -7,7 +7,7 @@ interface OrcaProps {
 const Orca: React.FC<OrcaProps> = ({ position }) => {
   return (
     <div
-      className="absolute w-16 h-10 animate-swimming"
+      className="absolute w-20 h-12 animate-swimming"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
@@ -15,14 +15,28 @@ const Orca: React.FC<OrcaProps> = ({ position }) => {
       }}
     >
       <svg viewBox="0 0 100 60" className="w-full h-full">
+        {/* Main body */}
         <path
           d="M90 30c0 11-19 20-45 20S0 41 0 30 19 10 45 10s45 9 45 20z"
-          fill="#000000"
+          fill="#1a1a1a"
         />
-        <circle cx="75" cy="25" r="5" fill="#ffffff" />
+        {/* White patch */}
         <path
-          d="M45 40c5 0 9-4 9-9s-4-9-9-9-9 4-9 9 4 9 9 9z"
+          d="M45 40c15 0 35-5 35-10s-20-10-35-10S10 25 10 30s20 10 35 10z"
           fill="#ffffff"
+        />
+        {/* Eye */}
+        <circle cx="75" cy="25" r="3" fill="#000000" />
+        <circle cx="75" cy="24.5" r="1" fill="#ffffff" />
+        {/* Dorsal fin */}
+        <path
+          d="M45 10l10-8v8z"
+          fill="#1a1a1a"
+        />
+        {/* Tail fin */}
+        <path
+          d="M5 30l-5-8 5-8z"
+          fill="#1a1a1a"
         />
       </svg>
     </div>
