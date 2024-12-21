@@ -3,7 +3,8 @@ import Orca from "./Orca";
 import Island from "./Island";
 import RewardScreen from "./RewardScreen";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
+import MobileControls from "./MobileControls";
+import GameBackground from "./GameBackground";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -140,55 +141,7 @@ const Game: React.FC = () => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Realistic wave effect */}
-      <div 
-        className="absolute inset-0 opacity-30"
-        style={{
-          background: `
-            repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 20px,
-              rgba(255, 255, 255, 0.1) 20px,
-              rgba(255, 255, 255, 0.1) 40px
-            )
-          `,
-          animation: "wave 20s linear infinite",
-        }}
-      />
-
-      {/* Enhanced water reflection effect */}
-      <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `
-            radial-gradient(
-              circle at 50% 50%,
-              rgba(255, 255, 255, 0.4) 0%,
-              transparent 60%
-            )
-          `,
-          animation: "reflection 4s ease-in-out infinite",
-        }}
-      />
-
-      {/* Improved snowfall effect */}
-      <div className="absolute inset-0">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute text-white transform scale-75 opacity-80"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `fall ${3 + Math.random() * 5}s linear infinite`,
-              filter: "blur(0.5px)",
-            }}
-          >
-            ❄️
-          </div>
-        ))}
-      </div>
+        <GameBackground />
 
         {islands.map((island, index) => (
           <Island key={index} {...island} />
@@ -204,36 +157,7 @@ const Game: React.FC = () => {
         {showReward && <RewardScreen />}
 
         {/* Mobile controls */}
-        {isMobile && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-            <button
-              className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
-              onClick={() => moveOrca('up')}
-            >
-              <ArrowUp className="w-8 h-8 text-white" />
-            </button>
-            <div className="flex gap-2">
-              <button
-                className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
-                onClick={() => moveOrca('left')}
-              >
-                <ArrowLeft className="w-8 h-8 text-white" />
-              </button>
-              <button
-                className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
-                onClick={() => moveOrca('down')}
-              >
-                <ArrowDown className="w-8 h-8 text-white" />
-              </button>
-              <button
-                className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
-                onClick={() => moveOrca('right')}
-              >
-                <ArrowRight className="w-8 h-8 text-white" />
-              </button>
-            </div>
-          </div>
-        )}
+        {isMobile && <MobileControls onMove={moveOrca} />}
       </div>
     </div>
   );
