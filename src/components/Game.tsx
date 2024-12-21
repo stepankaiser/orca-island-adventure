@@ -3,6 +3,7 @@ import Orca from "./Orca";
 import Island from "./Island";
 import RewardScreen from "./RewardScreen";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -19,6 +20,27 @@ const Game: React.FC = () => {
   const [showReward, setShowReward] = useState(false);
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
   const isMobile = useIsMobile();
+
+  const moveOrca = useCallback((direction: 'up' | 'down' | 'left' | 'right') => {
+    setPosition(prev => {
+      const newPosition = { ...prev };
+      switch (direction) {
+        case 'up':
+          newPosition.y = Math.max(0, prev.y - MOVEMENT_STEP);
+          break;
+        case 'down':
+          newPosition.y = Math.min(GAME_HEIGHT - 40, prev.y + MOVEMENT_STEP);
+          break;
+        case 'left':
+          newPosition.x = Math.max(0, prev.x - MOVEMENT_STEP);
+          break;
+        case 'right':
+          newPosition.x = Math.min(GAME_WIDTH - 64, prev.x + MOVEMENT_STEP);
+          break;
+      }
+      return newPosition;
+    });
+  }, []);
 
   const checkCollision = useCallback(() => {
     const orcaWidth = 64;
@@ -44,29 +66,25 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      const newPosition = { ...position };
-
       switch (e.key) {
         case "ArrowUp":
-          newPosition.y = Math.max(0, position.y - MOVEMENT_STEP);
+          moveOrca('up');
           break;
         case "ArrowDown":
-          newPosition.y = Math.min(GAME_HEIGHT - 40, position.y + MOVEMENT_STEP);
+          moveOrca('down');
           break;
         case "ArrowLeft":
-          newPosition.x = Math.max(0, position.x - MOVEMENT_STEP);
+          moveOrca('left');
           break;
         case "ArrowRight":
-          newPosition.x = Math.min(GAME_WIDTH - 64, position.x + MOVEMENT_STEP);
+          moveOrca('right');
           break;
       }
-
-      setPosition(newPosition);
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [position]);
+  }, [moveOrca]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
@@ -185,10 +203,35 @@ const Game: React.FC = () => {
 
         {showReward && <RewardScreen />}
 
-        {/* Mobile controls indicator */}
+        {/* Mobile controls */}
         {isMobile && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full">
-            Swipe to move the orca
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            <button
+              className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
+              onClick={() => moveOrca('up')}
+            >
+              <ArrowUp className="w-8 h-8 text-white" />
+            </button>
+            <div className="flex gap-2">
+              <button
+                className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
+                onClick={() => moveOrca('left')}
+              >
+                <ArrowLeft className="w-8 h-8 text-white" />
+              </button>
+              <button
+                className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
+                onClick={() => moveOrca('down')}
+              >
+                <ArrowDown className="w-8 h-8 text-white" />
+              </button>
+              <button
+                className="p-3 bg-white/30 rounded-full backdrop-blur-sm active:bg-white/50 transition-colors"
+                onClick={() => moveOrca('right')}
+              >
+                <ArrowRight className="w-8 h-8 text-white" />
+              </button>
+            </div>
           </div>
         )}
       </div>
