@@ -74,23 +74,64 @@ const Game: React.FC = () => {
 
   return (
     <div
-      className="relative overflow-hidden rounded-lg shadow-lg mx-auto"
+      className="relative overflow-hidden rounded-lg shadow-xl mx-auto"
       style={{
         width: `${GAME_WIDTH}px`,
         height: `${GAME_HEIGHT}px`,
-        background: "linear-gradient(to bottom, #D3E4FD, #0EA5E9)",
+        background: `
+          linear-gradient(
+            180deg, 
+            #2563eb 0%,
+            #0EA5E9 30%,
+            #38bdf8 60%,
+            #7dd3fc 100%
+          )
+        `,
       }}
     >
-      {/* Snowfall effect */}
-      <div className="absolute inset-0 animate-snow opacity-50">
-        {Array.from({ length: 20 }).map((_, i) => (
+      {/* Realistic wave effect */}
+      <div 
+        className="absolute inset-0 opacity-30"
+        style={{
+          background: `
+            repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 20px,
+              rgba(255, 255, 255, 0.1) 20px,
+              rgba(255, 255, 255, 0.1) 40px
+            )
+          `,
+          animation: "wave 20s linear infinite",
+        }}
+      />
+
+      {/* Enhanced water reflection effect */}
+      <div 
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: `
+            radial-gradient(
+              circle at 50% 50%,
+              rgba(255, 255, 255, 0.4) 0%,
+              transparent 60%
+            )
+          `,
+          animation: "reflection 4s ease-in-out infinite",
+        }}
+      />
+
+      {/* Improved snowfall effect */}
+      <div className="absolute inset-0">
+        {Array.from({ length: 30 }).map((_, i) => (
           <div
             key={i}
-            className="absolute text-white"
+            className="absolute text-white transform scale-75 opacity-80"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animation: `fall ${2 + Math.random() * 3}s linear infinite`,
+              animation: `fall ${3 + Math.random() * 5}s linear infinite`,
+              filter: "blur(0.5px)",
             }}
           >
             ❄️
@@ -98,34 +139,13 @@ const Game: React.FC = () => {
         ))}
       </div>
 
-      {/* Wave effect */}
-      <div className="absolute inset-0 animate-wave opacity-30">
-        <svg width="100%" height="100%">
-          <pattern
-            id="wave"
-            x="0"
-            y="0"
-            width="100"
-            height="20"
-            patternUnits="userSpaceOnUse"
-          >
-            <path
-              d="M0 5 Q 25 0, 50 5 T 100 5"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-            />
-          </pattern>
-          <rect width="100%" height="100%" fill="url(#wave)" />
-        </svg>
-      </div>
-
       {islands.map((island, index) => (
         <Island key={index} {...island} />
       ))}
 
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-40 bg-island-light border-2 border-island-dark rounded-l-full flex items-center justify-center">
-        <span className="text-4xl">🎄</span>
+      {/* Enhanced finish line */}
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-40 bg-gradient-to-r from-island-light to-island-dark border-2 border-island-dark rounded-l-full flex items-center justify-center shadow-lg">
+        <span className="text-4xl transform hover:scale-110 transition-transform">🎄</span>
       </div>
 
       <Orca position={position} />
