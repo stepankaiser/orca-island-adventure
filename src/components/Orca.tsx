@@ -7,50 +7,25 @@ interface OrcaProps {
 const Orca: React.FC<OrcaProps> = ({ position }) => {
   return (
     <div
-      className="absolute w-20 h-12 animate-swimming"
+      className="absolute"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
         transition: "all 0.1s ease-out",
+        transform: "scale(-1, 1)", // Flip horizontally to face right
+        width: "120px", // Increased size for better visibility
+        height: "80px",
       }}
     >
-      <svg viewBox="0 0 100 60" className="w-full h-full">
-        {/* Main body */}
-        <path
-          d="M90 30c0 11-19 20-45 20S0 41 0 30 19 10 45 10s45 9 45 20z"
-          fill="#1a1a1a"
-        />
-        {/* White patch - more detailed */}
-        <path
-          d="M45 40c15 0 35-5 35-10s-20-10-35-10S10 25 10 30s20 10 35 10z"
-          fill="#ffffff"
-        />
-        {/* Gray shading for depth */}
-        <path
-          d="M45 35c10 0 25-3 25-7s-15-7-25-7S20 24 20 28s15 7 25 7z"
-          fill="#f0f0f0"
-          opacity="0.3"
-        />
-        {/* Eye with more detail */}
-        <circle cx="75" cy="25" r="3" fill="#000000" />
-        <circle cx="75" cy="24.5" r="1" fill="#ffffff" />
-        <circle cx="74.5" cy="24" r="0.5" fill="#ffffff" opacity="0.8" />
-        {/* Larger dorsal fin with more realistic curve */}
-        <path
-          d="M45 10c0 0 8-8 12-12s6-4 6-1s-3 8-6 10-12 3-12 3z"
-          fill="#1a1a1a"
-        />
-        {/* Tail fin with better shape */}
-        <path
-          d="M5 30c0 0-5-4-5-8s2-8 5-8c-2 4-2 8 0 16z"
-          fill="#1a1a1a"
-        />
-        {/* Pectoral fin */}
-        <path
-          d="M40 35c-2 2-4 4-6 4s-4-2-2-4 6-2 8 0z"
-          fill="#1a1a1a"
-        />
-      </svg>
+      <img
+        src="https://images.unsplash.com/photo-1518877593221-1f28583780b4"
+        alt="Orca"
+        className="w-full h-full object-cover rounded-lg shadow-lg"
+        style={{
+          filter: "brightness(1.1) contrast(1.1)", // Enhance image quality
+          WebkitFilter: "brightness(1.1) contrast(1.1)",
+        }}
+      />
     </div>
   );
 };
