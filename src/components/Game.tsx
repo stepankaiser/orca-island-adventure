@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Orca from "./Orca";
 import Island from "./Island";
 import RewardScreen from "./RewardScreen";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -16,18 +17,18 @@ const islands = [
 const Game: React.FC = () => {
   const [position, setPosition] = useState({ x: 50, y: GAME_HEIGHT / 2 });
   const [showReward, setShowReward] = useState(false);
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
+  const isMobile = useIsMobile();
 
   const checkCollision = useCallback(() => {
     const orcaWidth = 64;
     const orcaHeight = 40;
 
-    // Check if orca reached the finish line
     if (position.x > GAME_WIDTH - 100) {
       setShowReward(true);
       return;
     }
 
-    // Check collision with islands
     for (const island of islands) {
       if (
         position.x < island.x + island.width &&
@@ -35,7 +36,6 @@ const Game: React.FC = () => {
         position.y < island.y + island.height &&
         position.y + orcaHeight > island.y
       ) {
-        // Reset position on collision
         setPosition({ x: 50, y: GAME_HEIGHT / 2 });
         return;
       }
@@ -68,28 +68,61 @@ const Game: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [position]);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStart) return;
+
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchStart.x;
+    const deltaY = touch.clientY - touchStart.y;
+    
+    const newPosition = {
+      x: Math.max(0, Math.min(GAME_WIDTH - 64, position.x + deltaX / 10)),
+      y: Math.max(0, Math.min(GAME_HEIGHT - 40, position.y + deltaY / 10))
+    };
+
+    setPosition(newPosition);
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+  };
+
+  const handleTouchEnd = () => {
+    setTouchStart(null);
+  };
+
   useEffect(() => {
     checkCollision();
   }, [position, checkCollision]);
 
+  const scale = isMobile ? Math.min(window.innerWidth / GAME_WIDTH, 0.8) : 1;
+
   return (
-    <div
-      className="relative overflow-hidden rounded-lg shadow-xl mx-auto"
-      style={{
-        width: `${GAME_WIDTH}px`,
-        height: `${GAME_HEIGHT}px`,
-        background: `
-          linear-gradient(
-            180deg, 
-            #2563eb 0%,
-            #0EA5E9 30%,
-            #38bdf8 60%,
-            #7dd3fc 100%
-          )
-        `,
-      }}
-    >
-      {/* Realistic wave effect */}
+    <div className="w-full overflow-x-hidden px-2">
+      <div
+        className="relative overflow-hidden rounded-lg shadow-xl mx-auto touch-none"
+        style={{
+          width: `${GAME_WIDTH}px`,
+          height: `${GAME_HEIGHT}px`,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top center',
+          background: `
+            linear-gradient(
+              180deg, 
+              #2563eb 0%,
+              #0EA5E9 30%,
+              #38bdf8 60%,
+              #7dd3fc 100%
+            )
+          `,
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Realistic wave effect */}
       <div 
         className="absolute inset-0 opacity-30"
         style={{
@@ -139,18 +172,26 @@ const Game: React.FC = () => {
         ))}
       </div>
 
-      {islands.map((island, index) => (
-        <Island key={index} {...island} />
-      ))}
+        {islands.map((island, index) => (
+          <Island key={index} {...island} />
+        ))}
 
-      {/* Enhanced finish line */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-40 bg-gradient-to-r from-island-light to-island-dark border-2 border-island-dark rounded-l-full flex items-center justify-center shadow-lg">
-        <span className="text-4xl transform hover:scale-110 transition-transform">🎄</span>
+        {/* Enhanced finish line */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-40 bg-gradient-to-r from-island-light to-island-dark border-2 border-island-dark rounded-l-full flex items-center justify-center shadow-lg">
+          <span className="text-4xl transform hover:scale-110 transition-transform">🎄</span>
+        </div>
+
+        <Orca position={position} />
+
+        {showReward && <RewardScreen />}
+
+        {/* Mobile controls indicator */}
+        {isMobile && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full">
+            Swipe to move the orca
+          </div>
+        )}
       </div>
-
-      <Orca position={position} />
-
-      {showReward && <RewardScreen />}
     </div>
   );
 };

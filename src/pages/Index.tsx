@@ -8,7 +8,9 @@ const Index = () => {
           Help Orca reach the finish line!
         </h1>
         <p className="text-center mb-4 text-gray-600">
-          Use arrow keys to guide the orca. Avoid the islands!
+          {typeof window !== 'undefined' && 'ontouchstart' in window
+            ? "Swipe to guide the orca. Avoid the islands!"
+            : "Use arrow keys to guide the orca. Avoid the islands!"}
         </p>
         <Game />
       </div>
